@@ -5,8 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "predeploy": "npm run build",
+    "deploy": "npm run build && npx gh-pages -d dist -u \"Juan Esteban M.B. <87776740+monajuan2000@users.noreply.github.com>\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "typecheck": "tsc -b",
+    "test": "node --test \"tests/**/*.test.ts\"",
+    "check": "npm run lint && npm run typecheck && npm run test",
     "preview": "vite preview"
   },
   "dependencies": {

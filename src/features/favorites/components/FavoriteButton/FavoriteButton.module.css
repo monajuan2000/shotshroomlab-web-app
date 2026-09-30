@@ -1,0 +1,29 @@
+.icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.icon:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent-strong);
+}
+
+.icon:active {
+  transform: scale(0.92);
+}
+
+.icon[aria-pressed='true'],
+.full[aria-pressed='true'] {
+  color: var(--color-danger);
+}

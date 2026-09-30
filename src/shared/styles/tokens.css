@@ -1,0 +1,77 @@
+/*
+ * Design tokens. Every color, spacing, radius and font used by the app is
+ * defined here so the look can be changed in one place.
+ * Breakpoints (CSS custom properties cannot be used inside media queries):
+ *   sm: 600px · md: 900px · lg: 1200px
+ */
+:root {
+  color-scheme: dark;
+
+  --color-bg: #0f0d0c;
+  --color-surface: #1a1715;
+  --color-surface-raised: #25201d;
+  --color-border: #3a322c;
+  --color-text: #f4ede6;
+  --color-text-muted: #b3a79c;
+  --color-accent: #e3a44a;
+  --color-accent-strong: #f2b963;
+  --color-accent-soft: rgb(227 164 74 / 0.14);
+  --color-accent-contrast: #1a1208;
+  --color-danger: #e5675a;
+  --color-focus: #f2b963;
+  --color-overlay: rgb(8 6 5 / 0.92);
+
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-display: Georgia, 'Times New Roman', serif;
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+  --font-size-2xl: clamp(2rem, 1.4rem + 2.6vw, 3.25rem);
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px rgb(0 0 0 / 0.25);
+
+  --container-width: 1200px;
+  --container-gutter: clamp(1rem, 4vw, 2rem);
+  --header-height: 64px;
+
+  --transition-fast: 150ms ease;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+
+    --color-bg: #faf6f1;
+    --color-surface: #ffffff;
+    --color-surface-raised: #f3ece4;
+    --color-border: #e2d6c9;
+    --color-text: #221a14;
+    --color-text-muted: #6b5d51;
+    --color-accent: #b36b12;
+    --color-accent-strong: #94570b;
+    --color-accent-soft: rgb(179 107 18 / 0.12);
+    --color-accent-contrast: #ffffff;
+    --color-danger: #b83a2d;
+    --color-focus: #b36b12;
+    --color-overlay: rgb(250 246 241 / 0.96);
+
+    --shadow-card: 0 1px 2px rgb(60 40 20 / 0.08), 0 8px 24px rgb(60 40 20 / 0.08);
+  }
+}

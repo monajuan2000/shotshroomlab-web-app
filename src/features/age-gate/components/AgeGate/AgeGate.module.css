@@ -1,0 +1,59 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: var(--container-gutter);
+  background:
+    radial-gradient(circle at 50% 30%, var(--color-accent-soft), transparent 60%),
+    var(--color-overlay);
+}
+
+.dialog {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-4);
+  width: min(100%, 440px);
+  padding: var(--space-6) var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  text-align: center;
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--color-accent-soft);
+  color: var(--color-accent-strong);
+}
+
+.title {
+  font-size: var(--font-size-xl);
+}
+
+.description {
+  color: var(--color-text-muted);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.actions > * {
+  flex: 1 1 140px;
+}
+
+.note {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
