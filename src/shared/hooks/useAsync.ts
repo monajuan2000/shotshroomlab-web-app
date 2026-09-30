@@ -7,6 +7,15 @@ export type AsyncState<T> =
 
 export type AsyncResult<T> = AsyncState<T> & { retry: () => void }
 
+export interface UseAsyncOptions {
+  /**
+   * Keep showing the last loaded data while a new request is pending instead
+   * of going back to the loading state. Useful when the same content is
+   * reloaded in another shape, such as after a language change.
+   */
+  keepPreviousData?: boolean
+}
+
 interface SettledState<T> {
   load: () => Promise<T>
   attempt: number
@@ -21,7 +30,10 @@ function toError(error: unknown): Error {
  * Runs `load` and tracks its result. Pass a stable function (module level or
  * wrapped in useCallback): a new function reference triggers a new request.
  */
-export function useAsync<T>(load: () => Promise<T>): AsyncResult<T> {
+export function useAsync<T>(
+  load: () => Promise<T>,
+  { keepPreviousData = false }: UseAsyncOptions = {},
+): AsyncResult<T> {
   const [attempt, setAttempt] = useState(0)
   const [settled, setSettled] = useState<SettledState<T> | null>(null)
 
@@ -46,7 +58,9 @@ export function useAsync<T>(load: () => Promise<T>): AsyncResult<T> {
 
   // A result only counts if it belongs to the current request.
   const isCurrent = settled !== null && settled.load === load && settled.attempt === attempt
-  const state: AsyncState<T> = isCurrent ? settled.state : { status: 'loading' }
+  const canReusePrevious = keepPreviousData && settled?.state.status === 'success'
+  const state: AsyncState<T> =
+    isCurrent || canReusePrevious ? settled.state : { status: 'loading' }
 
   return { ...state, retry }
 }

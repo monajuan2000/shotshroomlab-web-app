@@ -97,6 +97,13 @@ describe('formatMeasure', () => {
   it('shows free text measures unchanged', () => {
     assert.equal(formatMeasure({ kind: 'to-taste', note: 'Top up' }, 'oz', 4), 'Top up')
   })
+
+  it('uses the decimal separator and unit names of the locale', () => {
+    assert.equal(formatMeasure({ kind: 'volume', ml: 22.5 }, 'ml', 1, 'es'), '22,5 ml')
+    assert.equal(formatMeasure({ kind: 'volume', ml: 22.5 }, 'oz', 1, 'es'), '0,75 oz')
+    assert.equal(formatMeasure({ kind: 'count', value: 1, unit: 'leaf' }, 'ml', 1, 'es'), '1 hoja')
+    assert.equal(formatMeasure({ kind: 'count', value: 2, unit: 'dash' }, 'ml', 2, 'es'), '4 golpes')
+  })
 })
 
 describe('cocktail queries', () => {

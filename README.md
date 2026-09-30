@@ -10,6 +10,7 @@ A responsive web application to explore classic cocktail recipes and the spirits
 - **Spirit details** with flavor notes, serving ideas and the cocktails that use it.
 - **Favorites** for cocktails and spirits, saved on the device.
 - **Age verification** before entering the site.
+- **English and Spanish views**: a button in the header (and on the age check) switches every text, including the catalog, and remembers the choice.
 - Light and dark themes (follows the system), keyboard and screen reader friendly, mobile first.
 
 ## Technology stack
@@ -57,7 +58,7 @@ src/
 │   ├── favorites/
 │   ├── preferences/
 │   └── age-gate/
-└── shared/     Code with no business knowledge: UI kit, router, hooks, helpers, styles
+└── shared/     Code with no business knowledge: UI kit, router, i18n, hooks, helpers, styles
 ```
 
 ```
@@ -83,7 +84,7 @@ features/cocktails/
 
 ### Rules
 
-1. **Everything is in English**: code, comments, UI text, commit messages and documentation.
+1. **Everything is in English**: code, comments, commit messages and documentation. English is also the source language of the UI; other languages are translations of it (see [Translations](#translations)). Never hard-code UI text in a component.
 2. **Import other modules only through their public API**: `features/<name>/index.ts`, or `features/<name>/model/index.ts` for pure domain code.
 3. **Features do not import other features**, with one exception: `cocktails` may use the `liquors` model (a cocktail has a base spirit). Combine features in `widgets/` or `pages/`, or pass UI through props (see the `action` slot of the cards).
 4. **One component per folder**, with its CSS Module and an `index.ts`.
@@ -93,9 +94,19 @@ features/cocktails/
 8. **Data access goes through a repository** (`api/`). Pages and components never read `data/` directly.
 9. **Validate everything read from outside** (URL, localStorage). Stored keys are versioned in `shared/config/appConfig.ts`.
 
+### Translations
+
+The views can be shown in English (default) or Spanish. Only what the user sees is translated: code, ids, URLs and stored data stay in English.
+
+- `shared/i18n/` holds the current locale (`useLocale`), the provider that persists it and sets `<html lang>`, and `defineMessages`.
+- **UI text** lives next to its component in a `<Name>.messages.ts` file. `defineMessages({ en, es })` makes TypeScript fail when a locale is missing a key; read it with `useMessages(...)`. Use functions for text with values, for example `summary: (visible, total) => ...`.
+- **Domain labels** (glass, method, flavor, category, sort order…) are `Localized<Record<…>>` constants in each model: `GLASS_TYPE_LABELS[locale][glass]`.
+- **Catalog content** is written in English in `data/*.ts`; each locale adds `data/*.<locale>.ts`, keyed by id (and, for ingredients, by English name). Repositories take the locale and return translated items, so search and sorting work in the chosen language. `npm run test` fails if a translation is missing.
+- **Add a language**: add it to `LOCALES` in `shared/i18n/locales.ts` and to `defineMessages`, then follow the type errors and failing tests.
+
 ### Common tasks
 
-- **Add a cocktail or a spirit**: add an entry to `features/*/data/*.ts`. Never rename an existing `id`; other data and saved favorites reference it. `npm run test` checks the catalog for broken references.
+- **Add a cocktail or a spirit**: add an entry to `features/*/data/*.ts` and its texts to `features/*/data/*.es.ts`. Never rename an existing `id`; other data and saved favorites reference it. `npm run test` checks the catalog for broken references.
 - **Load data from an API**: implement `CocktailRepository` / `LiquorRepository` with `fetch` and export it from the feature's `api/` folder. The UI already handles loading and error states.
 - **Add a page**: create `src/pages/<Name>Page/`, add its pattern and path builder to `shared/config/routes.ts` and register it in `app/routes.ts`.
 - **Add a filter**: extend the filters type, `parse…Filters`, `to…SearchParams` and `apply…Filters` in the feature model, add a test, then add a `FilterGroup` to the filter panel.

@@ -1,4 +1,5 @@
 import { FilterGroup, FilterPanel } from '../../../../shared/components/index.ts'
+import { useLocale, useMessages } from '../../../../shared/i18n/index.ts'
 import { toOptions } from '../../../../shared/lib/options.ts'
 import { LIQUOR_CATEGORY_LABELS, type LiquorCategory } from '../../../liquors/model/index.ts'
 import {
@@ -10,10 +11,7 @@ import {
   PREPARATION_METHODS,
 } from '../../model/cocktail.ts'
 import { countActiveCocktailFilters, type CocktailFilters } from '../../model/cocktailFilters.ts'
-
-const METHOD_OPTIONS = toOptions(PREPARATION_METHODS, PREPARATION_METHOD_LABELS)
-const DIFFICULTY_OPTIONS = toOptions(DIFFICULTY_LEVELS, DIFFICULTY_LEVEL_LABELS)
-const FLAVOR_OPTIONS = toOptions(FLAVOR_PROFILES, FLAVOR_PROFILE_LABELS)
+import { cocktailFilterPanelMessages } from './CocktailFilterPanel.messages.ts'
 
 interface CocktailFilterPanelProps {
   filters: CocktailFilters
@@ -29,29 +27,32 @@ export function CocktailFilterPanel({
   onChange,
   onReset,
 }: CocktailFilterPanelProps) {
+  const { locale } = useLocale()
+  const messages = useMessages(cocktailFilterPanelMessages)
+
   return (
     <FilterPanel activeCount={countActiveCocktailFilters(filters)} onReset={onReset}>
       <FilterGroup
-        legend="Base spirit"
-        options={toOptions(availableBases, LIQUOR_CATEGORY_LABELS)}
+        legend={messages.base}
+        options={toOptions(availableBases, LIQUOR_CATEGORY_LABELS[locale])}
         selected={filters.bases}
         onChange={(bases) => onChange({ bases })}
       />
       <FilterGroup
-        legend="Flavor"
-        options={FLAVOR_OPTIONS}
+        legend={messages.flavor}
+        options={toOptions(FLAVOR_PROFILES, FLAVOR_PROFILE_LABELS[locale])}
         selected={filters.flavors}
         onChange={(flavors) => onChange({ flavors })}
       />
       <FilterGroup
-        legend="Method"
-        options={METHOD_OPTIONS}
+        legend={messages.method}
+        options={toOptions(PREPARATION_METHODS, PREPARATION_METHOD_LABELS[locale])}
         selected={filters.methods}
         onChange={(methods) => onChange({ methods })}
       />
       <FilterGroup
-        legend="Difficulty"
-        options={DIFFICULTY_OPTIONS}
+        legend={messages.difficulty}
+        options={toOptions(DIFFICULTY_LEVELS, DIFFICULTY_LEVEL_LABELS[locale])}
         selected={filters.difficulties}
         onChange={(difficulties) => onChange({ difficulties })}
       />

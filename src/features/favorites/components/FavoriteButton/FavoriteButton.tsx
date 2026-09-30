@@ -1,6 +1,8 @@
 import { Button, Icon } from '../../../../shared/components/index.ts'
+import { useMessages } from '../../../../shared/i18n/index.ts'
 import { useFavorites } from '../../hooks/useFavorites.ts'
 import type { FavoriteKind } from '../../model/favorites.ts'
+import { favoriteButtonMessages } from './FavoriteButton.messages.ts'
 import styles from './FavoriteButton.module.css'
 
 interface FavoriteButtonProps {
@@ -13,8 +15,9 @@ interface FavoriteButtonProps {
 
 export function FavoriteButton({ kind, id, itemName, appearance = 'icon' }: FavoriteButtonProps) {
   const { isFavorite, toggleFavorite } = useFavorites()
+  const messages = useMessages(favoriteButtonMessages)
   const isSaved = isFavorite(kind, id)
-  const label = isSaved ? `Remove ${itemName} from favorites` : `Save ${itemName} to favorites`
+  const label = isSaved ? messages.removeItem(itemName) : messages.saveItem(itemName)
 
   if (appearance === 'full') {
     return (
@@ -25,7 +28,7 @@ export function FavoriteButton({ kind, id, itemName, appearance = 'icon' }: Favo
         onClick={() => toggleFavorite(kind, id)}
       >
         <Icon name="heart" size={18} filled={isSaved} />
-        {isSaved ? 'Saved' : 'Save'}
+        {isSaved ? messages.saved : messages.save}
       </Button>
     )
   }

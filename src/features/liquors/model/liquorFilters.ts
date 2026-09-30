@@ -1,3 +1,4 @@
+import type { Localized } from '../../../shared/i18n/locales.ts'
 import {
   readEnum,
   readEnumList,
@@ -13,10 +14,17 @@ export const LIQUOR_SORT_ORDERS = ['name', 'abv-desc', 'abv-asc'] as const
 
 export type LiquorSortOrder = (typeof LIQUOR_SORT_ORDERS)[number]
 
-export const LIQUOR_SORT_LABELS: Readonly<Record<LiquorSortOrder, string>> = {
-  name: 'Name (A–Z)',
-  'abv-desc': 'Strongest first',
-  'abv-asc': 'Lightest first',
+export const LIQUOR_SORT_LABELS: Localized<Record<LiquorSortOrder, string>> = {
+  en: {
+    name: 'Name (A–Z)',
+    'abv-desc': 'Strongest first',
+    'abv-asc': 'Lightest first',
+  },
+  es: {
+    name: 'Nombre (A–Z)',
+    'abv-desc': 'Más fuertes primero',
+    'abv-asc': 'Más suaves primero',
+  },
 }
 
 export interface LiquorFilters {

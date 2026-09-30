@@ -1,17 +1,21 @@
 import { Icon } from '../../shared/components/index.ts'
 import { paths } from '../../shared/config/routes.ts'
+import { useMessages } from '../../shared/i18n/index.ts'
 import { Link, NavLink } from '../../shared/router/index.ts'
 import { useFavorites } from '../../features/favorites/index.ts'
+import { LanguageToggle } from '../../features/preferences/index.ts'
+import { siteHeaderMessages } from './SiteHeader.messages.ts'
 import styles from './SiteHeader.module.css'
-
-const NAV_ITEMS = [
-  { label: 'Home', to: paths.home(), end: true },
-  { label: 'Cocktails', to: paths.cocktails(), end: false },
-  { label: 'Spirits', to: paths.liquors(), end: false },
-] as const
 
 export function SiteHeader() {
   const { totalCount } = useFavorites()
+  const messages = useMessages(siteHeaderMessages)
+
+  const navItems = [
+    { label: messages.home, to: paths.home(), end: true },
+    { label: messages.cocktails, to: paths.cocktails(), end: false },
+    { label: messages.spirits, to: paths.liquors(), end: false },
+  ]
 
   return (
     <header className={styles.header}>
@@ -24,9 +28,9 @@ export function SiteHeader() {
             ShotShroom <span className={styles.brandAccent}>Lab</span>
           </span>
         </Link>
-        <nav className={styles.nav} aria-label="Main">
+        <nav className={styles.nav} aria-label={messages.navLabel}>
           <ul className={styles.navList}>
-            {NAV_ITEMS.map((item) => (
+            {navItems.map((item) => (
               <li key={item.to}>
                 <NavLink to={item.to} end={item.end} className={styles.navLink}>
                   {item.label}
@@ -36,17 +40,20 @@ export function SiteHeader() {
             <li>
               <NavLink to={paths.favorites()} className={styles.navLink}>
                 <Icon name="heart" size={16} />
-                Favorites
+                {messages.favorites}
                 {totalCount > 0 && (
                   <span className={styles.count}>
                     {totalCount}
-                    <span className="visually-hidden"> saved</span>
+                    <span className="visually-hidden">{messages.savedSuffix}</span>
                   </span>
                 )}
               </NavLink>
             </li>
           </ul>
         </nav>
+        <div className={styles.tools}>
+          <LanguageToggle />
+        </div>
       </div>
     </header>
   )

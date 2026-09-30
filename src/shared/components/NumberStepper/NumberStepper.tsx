@@ -1,6 +1,8 @@
 import { useId } from 'react'
+import { useMessages } from '../../i18n/hooks.ts'
 import { clamp } from '../../lib/number.ts'
 import { Icon } from '../Icon/index.ts'
+import { numberStepperMessages } from './NumberStepper.messages.ts'
 import styles from './NumberStepper.module.css'
 
 interface NumberStepperProps {
@@ -13,6 +15,7 @@ interface NumberStepperProps {
 
 export function NumberStepper({ label, value, min, max, onChange }: NumberStepperProps) {
   const labelId = useId()
+  const messages = useMessages(numberStepperMessages)
 
   function change(delta: number) {
     onChange(clamp(value + delta, min, max))
@@ -27,7 +30,7 @@ export function NumberStepper({ label, value, min, max, onChange }: NumberSteppe
         <button
           type="button"
           className={styles.button}
-          aria-label={`Decrease ${label.toLowerCase()}`}
+          aria-label={messages.decrease(label)}
           disabled={value <= min}
           onClick={() => change(-1)}
         >
@@ -39,7 +42,7 @@ export function NumberStepper({ label, value, min, max, onChange }: NumberSteppe
         <button
           type="button"
           className={styles.button}
-          aria-label={`Increase ${label.toLowerCase()}`}
+          aria-label={messages.increase(label)}
           disabled={value >= max}
           onClick={() => change(1)}
         >

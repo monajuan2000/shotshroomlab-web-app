@@ -9,6 +9,7 @@ import {
   SelectField,
 } from '../../shared/components/index.ts'
 import { useDocumentTitle } from '../../shared/hooks/useDocumentTitle.ts'
+import { useLocale, useMessages } from '../../shared/i18n/index.ts'
 import { pickUsedValues, toOptions } from '../../shared/lib/options.ts'
 import {
   LIQUOR_CATEGORIES,
@@ -20,11 +21,12 @@ import {
   useLiquors,
 } from '../../features/liquors/index.ts'
 import { LiquorGrid } from '../../widgets/LiquorGrid/index.ts'
-
-const SORT_OPTIONS = toOptions(LIQUOR_SORT_ORDERS, LIQUOR_SORT_LABELS)
+import { liquorsPageMessages } from './LiquorsPage.messages.ts'
 
 export function LiquorsPage() {
-  useDocumentTitle('Spirits')
+  const { locale } = useLocale()
+  const messages = useMessages(liquorsPageMessages)
+  useDocumentTitle(messages.documentTitle)
   const liquors = useLiquors()
   const { filters, updateFilters, resetFilters } = useLiquorFilters()
   // Changing the key remounts the search box so "Clear all" also clears its text.
@@ -38,11 +40,11 @@ export function LiquorsPage() {
   return (
     <>
       <PageHeader
-        eyebrow="The back bar"
-        title="Spirits"
-        description="Get to know the bottles behind every cocktail: their origin, strength and flavor."
+        eyebrow={messages.eyebrow}
+        title={messages.title}
+        description={messages.description}
       />
-      <AsyncView result={liquors} loadingLabel="Loading spirits…">
+      <AsyncView result={liquors} loadingLabel={messages.loading}>
         {(allLiquors) => {
           const visibleLiquors = applyLiquorFilters(allLiquors, filters)
           const availableCategories = pickUsedValues(
@@ -64,29 +66,29 @@ export function LiquorsPage() {
                 <>
                   <SearchInput
                     key={searchKey}
-                    label="Search spirits"
-                    placeholder="Search by name, origin or flavor"
+                    label={messages.searchLabel}
+                    placeholder={messages.searchPlaceholder}
                     initialValue={filters.query}
                     onSearch={(query) => updateFilters({ query })}
                   />
                   <SelectField
-                    label="Sort by"
+                    label={messages.sortBy}
                     value={filters.sort}
-                    options={SORT_OPTIONS}
+                    options={toOptions(LIQUOR_SORT_ORDERS, LIQUOR_SORT_LABELS[locale])}
                     onChange={(sort) => updateFilters({ sort })}
                   />
                 </>
               }
-              summary={`Showing ${visibleLiquors.length} of ${allLiquors.length} spirits`}
+              summary={messages.summary(visibleLiquors.length, allLiquors.length)}
             >
               {visibleLiquors.length > 0 ? (
                 <LiquorGrid liquors={visibleLiquors} />
               ) : (
                 <EmptyState
                   icon="search"
-                  title="No spirits match your search"
-                  description="Try a different word or remove some filters."
-                  actions={<Button onClick={handleReset}>Clear all filters</Button>}
+                  title={messages.emptyTitle}
+                  description={messages.emptyDescription}
+                  actions={<Button onClick={handleReset}>{messages.clearFilters}</Button>}
                 />
               )}
             </CatalogLayout>

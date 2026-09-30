@@ -1,8 +1,10 @@
 import { Suspense, useEffect, useRef, type ReactNode } from 'react'
 import { ErrorBoundary, ErrorState, LoadingState } from '../../../shared/components/index.ts'
+import { useMessages } from '../../../shared/i18n/index.ts'
 import { useLocation } from '../../../shared/router/index.ts'
 import { SiteFooter } from '../../../widgets/SiteFooter/index.ts'
 import { SiteHeader } from '../../../widgets/SiteHeader/index.ts'
+import { rootLayoutMessages } from './RootLayout.messages.ts'
 import styles from './RootLayout.module.css'
 
 interface RootLayoutProps {
@@ -12,6 +14,7 @@ interface RootLayoutProps {
 export function RootLayout({ children }: RootLayoutProps) {
   const { pathname } = useLocation()
   const mainRef = useRef<HTMLElement>(null)
+  const messages = useMessages(rootLayoutMessages)
 
   // Hash navigation keeps the scroll position, so start every page at the top.
   useEffect(() => {
@@ -25,7 +28,7 @@ export function RootLayout({ children }: RootLayoutProps) {
   return (
     <div className={styles.shell}>
       <button type="button" className={styles.skipLink} onClick={skipToContent}>
-        Skip to content
+        {messages.skipToContent}
       </button>
       <SiteHeader />
       <main ref={mainRef} className={styles.main} tabIndex={-1}>

@@ -1,15 +1,18 @@
 import { ButtonLink, EmptyState } from '../../shared/components/index.ts'
 import { paths } from '../../shared/config/routes.ts'
 import { useDocumentTitle } from '../../shared/hooks/useDocumentTitle.ts'
+import { useMessages } from '../../shared/i18n/index.ts'
+import { notFoundPageMessages } from './NotFoundPage.messages.ts'
 
 export function NotFoundPage() {
-  useDocumentTitle('Page not found')
+  const messages = useMessages(notFoundPageMessages)
+  useDocumentTitle(messages.title)
 
   return (
     <EmptyState
-      title="Page not found"
-      description="The page you are looking for does not exist or has moved."
-      actions={<ButtonLink to={paths.home()}>Go to the home page</ButtonLink>}
+      title={messages.title}
+      description={messages.description}
+      actions={<ButtonLink to={paths.home()}>{messages.goHome}</ButtonLink>}
     />
   )
 }

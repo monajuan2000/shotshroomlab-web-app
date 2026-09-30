@@ -1,5 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
+import { useMessages } from '../../i18n/hooks.ts'
 import { Icon } from '../Icon/index.ts'
+import { searchInputMessages } from './SearchInput.messages.ts'
 import styles from './SearchInput.module.css'
 
 interface SearchInputProps {
@@ -23,6 +25,7 @@ export function SearchInput({
   onSearch,
 }: SearchInputProps) {
   const inputId = useId()
+  const messages = useMessages(searchInputMessages)
   const [value, setValue] = useState(initialValue)
   const timeoutRef = useRef<number | undefined>(undefined)
 
@@ -64,7 +67,7 @@ export function SearchInput({
         onChange={(event) => handleChange(event.target.value)}
       />
       {value && (
-        <button type="button" className={styles.clear} aria-label="Clear search" onClick={handleClear}>
+        <button type="button" className={styles.clear} aria-label={messages.clear} onClick={handleClear}>
           <Icon name="close" size={16} />
         </button>
       )}

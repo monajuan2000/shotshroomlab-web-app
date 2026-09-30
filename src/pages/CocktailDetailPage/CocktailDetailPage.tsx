@@ -12,6 +12,7 @@ import {
 } from '../../shared/components/index.ts'
 import { paths } from '../../shared/config/routes.ts'
 import { useDocumentTitle } from '../../shared/hooks/useDocumentTitle.ts'
+import { useLocale, useMessages, type Locale } from '../../shared/i18n/index.ts'
 import { useParams } from '../../shared/router/index.ts'
 import {
   DIFFICULTY_LEVEL_LABELS,
@@ -30,19 +31,22 @@ import { FavoriteButton } from '../../features/favorites/index.ts'
 import { LIQUOR_CATEGORY_LABELS } from '../../features/liquors/index.ts'
 import { UnitSystemToggle, usePreferences } from '../../features/preferences/index.ts'
 import { CocktailGrid } from '../../widgets/CocktailGrid/index.ts'
+import { cocktailDetailPageMessages } from './CocktailDetailPage.messages.ts'
 import styles from './CocktailDetailPage.module.css'
 
 const MIN_SERVINGS = 1
 const MAX_SERVINGS = 12
 
-function getFacts(cocktail: Cocktail) {
+type FactLabels = (typeof cocktailDetailPageMessages)[Locale]['facts']
+
+function getFacts(cocktail: Cocktail, locale: Locale, labels: FactLabels) {
   return [
-    { label: 'Base spirit', value: LIQUOR_CATEGORY_LABELS[cocktail.baseCategory] },
-    { label: 'Method', value: PREPARATION_METHOD_LABELS[cocktail.method] },
-    { label: 'Glass', value: GLASS_TYPE_LABELS[cocktail.glass] },
-    { label: 'Difficulty', value: DIFFICULTY_LEVEL_LABELS[cocktail.difficulty] },
-    { label: 'Prep time', value: `${cocktail.prepMinutes} min` },
-    { label: 'Garnish', value: cocktail.garnish ?? 'None' },
+    { label: labels.base, value: LIQUOR_CATEGORY_LABELS[locale][cocktail.baseCategory] },
+    { label: labels.method, value: PREPARATION_METHOD_LABELS[locale][cocktail.method] },
+    { label: labels.glass, value: GLASS_TYPE_LABELS[locale][cocktail.glass] },
+    { label: labels.difficulty, value: DIFFICULTY_LEVEL_LABELS[locale][cocktail.difficulty] },
+    { label: labels.prepTime, value: `${cocktail.prepMinutes} min` },
+    { label: labels.garnish, value: cocktail.garnish ?? labels.noGarnish },
   ]
 }
 
@@ -51,10 +55,14 @@ export function CocktailDetailPage() {
   const cocktail = useCocktail(cocktailId)
   const cocktails = useCocktails()
   const { unitSystem } = usePreferences()
+  const { locale } = useLocale()
+  const messages = useMessages(cocktailDetailPageMessages)
   const [servings, setServings] = useState(MIN_SERVINGS)
 
   useDocumentTitle(
-    cocktail.status === 'success' ? (cocktail.data?.name ?? 'Cocktail not found') : 'Cocktail',
+    cocktail.status === 'success'
+      ? (cocktail.data?.name ?? messages.notFoundTitle)
+      : messages.documentTitle,
   )
 
   return (
@@ -62,10 +70,10 @@ export function CocktailDetailPage() {
       <div className={styles.back}>
         <ButtonLink to={paths.cocktails()} variant="ghost" size="sm">
           <Icon name="arrowLeft" size={16} />
-          All cocktails
+          {messages.allCocktails}
         </ButtonLink>
       </div>
-      <AsyncView result={cocktail} loadingLabel="Loading recipe…">
+      <AsyncView result={cocktail} loadingLabel={messages.loadingRecipe}>
         {(found) =>
           found ? (
             <article className={styles.page}>
@@ -76,7 +84,7 @@ export function CocktailDetailPage() {
                 media={<GlassIllustration glass={found.glass} color={found.color} size={200} />}
                 eyebrow={found.flavors.map((flavor) => (
                   <Badge key={flavor} tone="accent">
-                    {FLAVOR_PROFILE_LABELS[flavor]}
+                    {FLAVOR_PROFILE_LABELS[locale][flavor]}
                   </Badge>
                 ))}
                 actions={
@@ -84,18 +92,18 @@ export function CocktailDetailPage() {
                 }
               >
                 <p className={styles.description}>{found.description}</p>
-                <FactList facts={getFacts(found)} />
+                <FactList facts={getFacts(found, locale, messages.facts)} />
               </DetailHero>
 
               <div className={styles.recipe}>
                 <section className={styles.panel} aria-labelledby="ingredients-title">
                   <div className={styles.panelHeader}>
                     <h2 id="ingredients-title" className={styles.panelTitle}>
-                      Ingredients
+                      {messages.ingredients}
                     </h2>
                     <div className={styles.panelControls}>
                       <NumberStepper
-                        label="Servings"
+                        label={messages.servings}
                         value={servings}
                         min={MIN_SERVINGS}
                         max={MAX_SERVINGS}
@@ -112,17 +120,17 @@ export function CocktailDetailPage() {
                 </section>
                 <section className={styles.panel} aria-labelledby="steps-title">
                   <h2 id="steps-title" className={styles.panelTitle}>
-                    Preparation
+                    {messages.preparation}
                   </h2>
                   <PreparationSteps steps={found.steps} />
                 </section>
               </div>
 
-              <AsyncView result={cocktails} loadingLabel="Loading suggestions…">
+              <AsyncView result={cocktails} loadingLabel={messages.loadingSuggestions}>
                 {(allCocktails) => {
                   const related = findRelatedCocktails(found, allCocktails)
                   return related.length > 0 ? (
-                    <Section title="You might also like">
+                    <Section title={messages.related}>
                       <CocktailGrid cocktails={related} />
                     </Section>
                   ) : null
@@ -131,9 +139,9 @@ export function CocktailDetailPage() {
             </article>
           ) : (
             <EmptyState
-              title="Cocktail not found"
-              description="This recipe does not exist or may have been removed."
-              actions={<ButtonLink to={paths.cocktails()}>Browse cocktails</ButtonLink>}
+              title={messages.notFoundTitle}
+              description={messages.notFoundDescription}
+              actions={<ButtonLink to={paths.cocktails()}>{messages.browseCocktails}</ButtonLink>}
             />
           )
         }

@@ -1,3 +1,4 @@
+import type { Localized } from '../../../shared/i18n/locales.ts'
 import {
   readEnum,
   readEnumList,
@@ -22,10 +23,17 @@ export const COCKTAIL_SORT_ORDERS = ['name', 'quickest', 'easiest'] as const
 
 export type CocktailSortOrder = (typeof COCKTAIL_SORT_ORDERS)[number]
 
-export const COCKTAIL_SORT_LABELS: Readonly<Record<CocktailSortOrder, string>> = {
-  name: 'Name (A–Z)',
-  quickest: 'Quickest first',
-  easiest: 'Easiest first',
+export const COCKTAIL_SORT_LABELS: Localized<Record<CocktailSortOrder, string>> = {
+  en: {
+    name: 'Name (A–Z)',
+    quickest: 'Quickest first',
+    easiest: 'Easiest first',
+  },
+  es: {
+    name: 'Nombre (A–Z)',
+    quickest: 'Más rápidos primero',
+    easiest: 'Más fáciles primero',
+  },
 }
 
 export interface CocktailFilters {

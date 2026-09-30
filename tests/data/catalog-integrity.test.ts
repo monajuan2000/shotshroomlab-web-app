@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { COCKTAILS } from '../../src/features/cocktails/data/cocktails.ts'
+import { COCKTAILS_ES } from '../../src/features/cocktails/data/cocktails.es.ts'
 import {
   DIFFICULTY_LEVELS,
   FLAVOR_PROFILES,
@@ -8,6 +9,7 @@ import {
   PREPARATION_METHODS,
 } from '../../src/features/cocktails/model/index.ts'
 import { LIQUORS } from '../../src/features/liquors/data/liquors.ts'
+import { LIQUORS_ES } from '../../src/features/liquors/data/liquors.es.ts'
 import { LIQUOR_CATEGORIES } from '../../src/features/liquors/model/index.ts'
 
 // Guards the hand written catalogs so mistakes fail the build, not the UI.
@@ -93,4 +95,59 @@ describe('cocktail catalog', () => {
   it('features at least one cocktail on the home page', () => {
     assert.ok(COCKTAILS.some((cocktail) => cocktail.isFeatured))
   })
+})
+
+describe('catalog translations', () => {
+  const cocktailTranslations = { es: COCKTAILS_ES }
+  const liquorTranslations = { es: LIQUORS_ES }
+
+  for (const [locale, translation] of Object.entries(liquorTranslations)) {
+    it(`translates every liquor to "${locale}"`, () => {
+      const liquorIds = new Set(LIQUORS.map((liquor) => liquor.id))
+      for (const id of Object.keys(translation)) {
+        assert.ok(liquorIds.has(id), `${locale}: translation for unknown liquor "${id}"`)
+      }
+      for (const liquor of LIQUORS) {
+        const texts = translation[liquor.id]
+        assert.ok(texts, `${locale}: missing liquor "${liquor.id}"`)
+        assert.equal(texts.flavorNotes.length, liquor.flavorNotes.length, `${locale}: ${liquor.id} flavor notes`)
+        assert.equal(
+          texts.servingSuggestions.length,
+          liquor.servingSuggestions.length,
+          `${locale}: ${liquor.id} serving suggestions`,
+        )
+      }
+    })
+  }
+
+  for (const [locale, translation] of Object.entries(cocktailTranslations)) {
+    it(`translates every cocktail to "${locale}"`, () => {
+      const cocktailIds = new Set(COCKTAILS.map((cocktail) => cocktail.id))
+      for (const id of Object.keys(translation.cocktails)) {
+        assert.ok(cocktailIds.has(id), `${locale}: translation for unknown cocktail "${id}"`)
+      }
+      for (const cocktail of COCKTAILS) {
+        const texts = translation.cocktails[cocktail.id]
+        assert.ok(texts, `${locale}: missing cocktail "${cocktail.id}"`)
+        assert.equal(texts.steps.length, cocktail.steps.length, `${locale}: ${cocktail.id} steps`)
+        assert.equal(new Set(texts.steps).size, texts.steps.length, `${locale}: ${cocktail.id} duplicated step`)
+        assert.equal(
+          texts.garnish === undefined,
+          cocktail.garnish === undefined,
+          `${locale}: ${cocktail.id} garnish`,
+        )
+      }
+    })
+
+    it(`translates every ingredient and note to "${locale}"`, () => {
+      for (const cocktail of COCKTAILS) {
+        for (const { name, measure } of cocktail.ingredients) {
+          assert.ok(name in translation.terms, `${locale}: missing ingredient "${name}"`)
+          if (measure.kind === 'to-taste') {
+            assert.ok(measure.note in translation.terms, `${locale}: missing note "${measure.note}"`)
+          }
+        }
+      }
+    })
+  }
 })

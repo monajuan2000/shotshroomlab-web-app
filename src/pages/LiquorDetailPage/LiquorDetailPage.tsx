@@ -10,23 +10,28 @@ import {
 } from '../../shared/components/index.ts'
 import { paths } from '../../shared/config/routes.ts'
 import { useDocumentTitle } from '../../shared/hooks/useDocumentTitle.ts'
+import { useLocale, useMessages, type Locale } from '../../shared/i18n/index.ts'
 import { useParams } from '../../shared/router/index.ts'
 import { findCocktailsWithLiquor, useCocktails } from '../../features/cocktails/index.ts'
 import { FavoriteButton } from '../../features/favorites/index.ts'
 import {
   BottleIllustration,
   LIQUOR_CATEGORY_LABELS,
+  formatAbv,
   useLiquor,
   type Liquor,
 } from '../../features/liquors/index.ts'
 import { CocktailGrid } from '../../widgets/CocktailGrid/index.ts'
+import { liquorDetailPageMessages } from './LiquorDetailPage.messages.ts'
 import styles from './LiquorDetailPage.module.css'
 
-function getFacts(liquor: Liquor) {
+type FactLabels = (typeof liquorDetailPageMessages)[Locale]['facts']
+
+function getFacts(liquor: Liquor, locale: Locale, labels: FactLabels) {
   return [
-    { label: 'Category', value: LIQUOR_CATEGORY_LABELS[liquor.category] },
-    { label: 'Strength', value: `${liquor.abv}% ABV` },
-    { label: 'Origin', value: liquor.origin },
+    { label: labels.category, value: LIQUOR_CATEGORY_LABELS[locale][liquor.category] },
+    { label: labels.strength, value: formatAbv(liquor.abv, locale) },
+    { label: labels.origin, value: liquor.origin },
   ]
 }
 
@@ -34,9 +39,11 @@ export function LiquorDetailPage() {
   const { liquorId } = useParams()
   const liquor = useLiquor(liquorId)
   const cocktails = useCocktails()
+  const { locale } = useLocale()
+  const messages = useMessages(liquorDetailPageMessages)
 
   useDocumentTitle(
-    liquor.status === 'success' ? (liquor.data?.name ?? 'Spirit not found') : 'Spirit',
+    liquor.status === 'success' ? (liquor.data?.name ?? messages.notFoundTitle) : messages.documentTitle,
   )
 
   return (
@@ -44,10 +51,10 @@ export function LiquorDetailPage() {
       <div className={styles.back}>
         <ButtonLink to={paths.liquors()} variant="ghost" size="sm">
           <Icon name="arrowLeft" size={16} />
-          All spirits
+          {messages.allSpirits}
         </ButtonLink>
       </div>
-      <AsyncView result={liquor} loadingLabel="Loading spirit…">
+      <AsyncView result={liquor} loadingLabel={messages.loadingSpirit}>
         {(found) =>
           found ? (
             <article className={styles.page}>
@@ -65,10 +72,10 @@ export function LiquorDetailPage() {
                 }
               >
                 <p className={styles.description}>{found.description}</p>
-                <FactList facts={getFacts(found)} />
+                <FactList facts={getFacts(found, locale, messages.facts)} />
               </DetailHero>
 
-              <Section title="How to enjoy it">
+              <Section title={messages.howToEnjoy}>
                 <ul className={styles.suggestions}>
                   {found.servingSuggestions.map((suggestion) => (
                     <li key={suggestion}>{suggestion}</li>
@@ -76,11 +83,11 @@ export function LiquorDetailPage() {
                 </ul>
               </Section>
 
-              <AsyncView result={cocktails} loadingLabel="Loading cocktails…">
+              <AsyncView result={cocktails} loadingLabel={messages.loadingCocktails}>
                 {(allCocktails) => {
                   const featuring = findCocktailsWithLiquor(allCocktails, found.id)
                   return featuring.length > 0 ? (
-                    <Section title={`Cocktails with ${found.name}`}>
+                    <Section title={messages.cocktailsWith(found.name)}>
                       <CocktailGrid cocktails={featuring} />
                     </Section>
                   ) : null
@@ -89,9 +96,9 @@ export function LiquorDetailPage() {
             </article>
           ) : (
             <EmptyState
-              title="Spirit not found"
-              description="This spirit does not exist or may have been removed."
-              actions={<ButtonLink to={paths.liquors()}>Browse spirits</ButtonLink>}
+              title={messages.notFoundTitle}
+              description={messages.notFoundDescription}
+              actions={<ButtonLink to={paths.liquors()}>{messages.browseSpirits}</ButtonLink>}
             />
           )
         }

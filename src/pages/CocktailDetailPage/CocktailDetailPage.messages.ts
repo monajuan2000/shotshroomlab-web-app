@@ -1,0 +1,48 @@
+import { defineMessages } from '../../shared/i18n/index.ts'
+
+export const cocktailDetailPageMessages = defineMessages({
+  en: {
+    documentTitle: 'Cocktail',
+    allCocktails: 'All cocktails',
+    loadingRecipe: 'Loading recipe…',
+    loadingSuggestions: 'Loading suggestions…',
+    ingredients: 'Ingredients',
+    servings: 'Servings',
+    preparation: 'Preparation',
+    related: 'You might also like',
+    notFoundTitle: 'Cocktail not found',
+    notFoundDescription: 'This recipe does not exist or may have been removed.',
+    browseCocktails: 'Browse cocktails',
+    facts: {
+      base: 'Base spirit',
+      method: 'Method',
+      glass: 'Glass',
+      difficulty: 'Difficulty',
+      prepTime: 'Prep time',
+      garnish: 'Garnish',
+      noGarnish: 'None',
+    },
+  },
+  es: {
+    documentTitle: 'Cóctel',
+    allCocktails: 'Todos los cócteles',
+    loadingRecipe: 'Cargando receta…',
+    loadingSuggestions: 'Cargando sugerencias…',
+    ingredients: 'Ingredientes',
+    servings: 'Porciones',
+    preparation: 'Preparación',
+    related: 'También te puede gustar',
+    notFoundTitle: 'Cóctel no encontrado',
+    notFoundDescription: 'Esta receta no existe o puede haber sido eliminada.',
+    browseCocktails: 'Explorar cócteles',
+    facts: {
+      base: 'Destilado base',
+      method: 'Método',
+      glass: 'Vaso',
+      difficulty: 'Dificultad',
+      prepTime: 'Preparación',
+      garnish: 'Decoración',
+      noGarnish: 'Ninguna',
+    },
+  },
+})
