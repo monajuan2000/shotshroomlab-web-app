@@ -1,0 +1,1 @@
+import{F as e,y as t}from"./routes-CNxxY4f4.js";import{o as n}from"./index-DJziYnhb.js";import{n as r}from"./liquors-DRLQfWSQ.js";var i=e();function a({liquors:e}){return(0,i.jsx)(t,{items:e,getKey:e=>e.id,renderItem:e=>(0,i.jsx)(r,{liquor:e,action:(0,i.jsx)(n,{kind:`liquor`,id:e.id,itemName:e.name})})})}export{a as t};

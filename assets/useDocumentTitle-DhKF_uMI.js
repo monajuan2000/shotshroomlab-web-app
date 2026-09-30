@@ -1,0 +1,1 @@
+import{I as e,r as t}from"./routes-CNxxY4f4.js";var n=e();function r(e){(0,n.useEffect)(()=>{document.title=e?`${e} · ${t.name}`:`${t.name} · ${t.tagline}`},[e])}export{r as t};

@@ -1,0 +1,1 @@
+import{E as e,F as t,n,w as r}from"./routes-CNxxY4f4.js";import{t as i}from"./useDocumentTitle-DhKF_uMI.js";var a=t();function o(){return i(`Page not found`),(0,a.jsx)(r,{title:`Page not found`,description:`The page you are looking for does not exist or has moved.`,actions:(0,a.jsx)(e,{to:n.home(),children:`Go to the home page`})})}export{o as NotFoundPage};
