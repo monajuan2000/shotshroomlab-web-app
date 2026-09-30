@@ -1,0 +1,1 @@
+import{E as e,L as t,R as n,l as r}from"./index-Bvcm0-JU.js";var i=n(),a=e({en:{tagline:`Spirits, cocktails and the craft behind them.`},es:{tagline:`Destilados, cócteles y el oficio detrás de ellos.`}});function o(e){let{tagline:n}=t(a);(0,i.useEffect)(()=>{document.title=e?`${e} · ${r.name}`:`${r.name} · ${n}`},[e,n])}export{o as t};

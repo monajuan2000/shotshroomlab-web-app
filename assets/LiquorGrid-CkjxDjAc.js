@@ -1,0 +1,1 @@
+import{C as e,F as t,t as n}from"./index-Bvcm0-JU.js";import{n as r}from"./liquors-CMldiiLq.js";var i=t();function a({liquors:t}){return(0,i.jsx)(e,{items:t,getKey:e=>e.id,renderItem:e=>(0,i.jsx)(r,{liquor:e,action:(0,i.jsx)(n,{kind:`liquor`,id:e.id,itemName:e.name})})})}export{a as t};
